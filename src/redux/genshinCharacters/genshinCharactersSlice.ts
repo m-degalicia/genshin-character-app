@@ -1,44 +1,35 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { RootState, AppThunk } from '../../app/store';
-import { fetchCharacters } from './genshinCharactersAPI';
-
+import { client } from 'api/client';
+import { SERVER_URL } from 'constants/index';
 import type Character from 'types/Character';
 
 export interface GenshinState {
   list: Character[] | [];
-  status: 'idle' | 'loading' | 'failed';
+  status: 'idle' | 'loading' | 'succeeded' | 'failed';
+  error: string | undefined | null;
 }
 
 const initialState: GenshinState = {
-  list: [
-    {
-      "id": 1,
-      "name": "Albedo",
-      "vision": "Geo",
-      "weapon": "Sword",
-      "nation": "Mondstadt",
-      "affiliation": "Knights of Favonius",
-      "rarity": 5,
-    },
-    {
-      "id": 2,
-      "name": "Xiao",
-      "vision": "Anemo",
-      "weapon": "Polearm",
-      "nation": "Liyue",
-      "affiliation": "Liyue Adeptus",
-      "rarity": 5,
-    }
-  ],
+  list: [],
   status: 'idle',
+  error: null,
 };
 
 export const fetchCharactersList = createAsyncThunk(
-  'genshinCharacters/fetchCharacters',
+  'genshinCharacters/fetch',
   async () => {
-    const response = await fetchCharacters();
-    console.log(response.data);
-    return response.data;
+    const response = await client.get(`${SERVER_URL}characters/all`);
+    const transformedResponse = response?.data?.map((char: any, index: number) => ({
+      id: index + 1,
+      name: char.name,
+      vision: char.vision,
+      weapon: char.weapon,
+      nation: char.nation,
+      affiliation: char.affiliation,
+      rarity: char.rarity
+    }))
+    return transformedResponse;
   }
 );
 
@@ -53,11 +44,12 @@ export const genshinCharactersSlice = createSlice({
         state.status = 'loading';
       })
       .addCase(fetchCharactersList.fulfilled, (state, action) => {
-        state.status = 'idle';
+        state.status = 'succeeded';
         state.list = [...action.payload];
       })
-      .addCase(fetchCharactersList.rejected, (state) => {
+      .addCase(fetchCharactersList.rejected, (state, action) => {
         state.status = 'failed';
+        state.error = action.error.message;
       });
   },
 });
