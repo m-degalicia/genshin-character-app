@@ -1,4 +1,5 @@
 import React, { FunctionComponent } from "react";
+import Box from "@mui/material/Box";
 
 import NavBar from "./NavBar";
 
@@ -8,11 +9,12 @@ export interface LayoutProps {
 
 const Layout: FunctionComponent<LayoutProps> = ({ children }) => {
   return (
-    <div>
-      <div>Header</div>
+    <>
       <NavBar />
-      <div>{children}</div>
-    </div>
+      <Box sx={{ p: 1, width: "100%", height: "100%", overflow: "hidden" }}>
+        {children}
+      </Box>
+    </>
   );
 };
 
