@@ -1,9 +1,11 @@
 import { configureStore, ThunkAction, Action } from '@reduxjs/toolkit';
-import counterReducer from '../features/counter/counterSlice';
+import counterReducer from 'redux/counter/counterSlice';
+import genshinCharactersReducer from 'redux/genshinCharacters/genshinCharactersSlice';
 
 export const store = configureStore({
   reducer: {
     counter: counterReducer,
+    genshinCharacters: genshinCharactersReducer,
   },
 });
 

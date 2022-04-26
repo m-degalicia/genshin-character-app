@@ -1,6 +1,7 @@
 import type { Element, Weapon, Nation, Rarity } from './Attributes';
 
 type Character = {
+  id: number;
   name: string;
   vision: Element;
   weapon: Weapon;
