@@ -16,9 +16,10 @@ import ConfirmDialog from "components/ConfirmDialog";
 
 import {
   selectCharacterList,
-  fetchCharactersList,
   characterRemoved,
 } from "redux/genshinCharacters/genshinCharactersSlice";
+
+import useFetchCharactersList from "utils/useFetchCharactersList";
 
 const DataGridToolbar = () => (
   <GridToolbarContainer>
@@ -26,23 +27,23 @@ const DataGridToolbar = () => (
   </GridToolbarContainer>
 );
 
-const getId = (params: GridValueGetterParams) => params.row.id;
-
 const getActionInfo = (params: GridValueGetterParams) => {
   return { id: params.row.id, name: params.row.name };
 };
 
 const TablePage = () => {
-  const [pageSize, setPageSize] = useState<number>(5);
+  useFetchCharactersList();
   const characterList = useAppSelector(selectCharacterList);
   const characterListStatus = useAppSelector(
     (state) => state.genshinCharacters.status
   );
   const dispatch = useAppDispatch();
-
+  const [pageSize, setPageSize] = useState<number>(5);
   const [open, setOpen] = useState(false);
   const [dialogName, setDialogName] = useState("");
   const [dialogId, setDialogId] = useState("");
+  const isInit =
+    characterListStatus === "idle" || characterListStatus === "loading";
 
   const handleDialogOpen = (name: string, id: string) => {
     setDialogName(name);
@@ -92,11 +93,13 @@ const TablePage = () => {
     },
   ];
 
-  useEffect(() => {
-    if (characterListStatus === "idle") {
-      dispatch(fetchCharactersList());
-    }
-  }, [characterListStatus, dispatch]);
+  if (isInit) {
+    return <div>Loading...</div>;
+  }
+
+  if (characterListStatus === "failed") {
+    return <div>Error fetching data</div>;
+  }
 
   return (
     <div

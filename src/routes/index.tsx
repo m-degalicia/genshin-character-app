@@ -10,7 +10,7 @@ const TableForm = lazy(() => import("pages/table/TableForm"));
 
 const AppRoutes = () => (
   <Layout>
-    <Suspense fallback={<div>loading...</div>}>
+    <Suspense fallback={<div>Loading...</div>}>
       <Routes>
         <Route path={routes.root()} element={<></>} />
         <Route path={routes.chart()} element={<ChartPage />} />

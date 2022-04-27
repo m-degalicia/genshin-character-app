@@ -29,10 +29,13 @@ import {
 import routes from "routes/routes";
 import { Element, Nation, Rarity, Weapon } from "types/Attributes";
 
+import useFetchCharactersList from "utils/useFetchCharactersList";
+
 const TableForm = () => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const { id } = useParams();
+  useFetchCharactersList();
   const isEdit = typeof id !== "undefined";
   const characterListStatus = useAppSelector(
     (state) => state.genshinCharacters.status
@@ -48,12 +51,6 @@ const TableForm = () => {
   const [weapon, setWeapon] = useState("");
   const [nation, setNation] = useState("");
   const [rarity, setRarity] = useState(4);
-
-  useEffect(() => {
-    if (characterListStatus === "idle") {
-      dispatch(fetchCharactersList());
-    }
-  }, [characterListStatus, dispatch]);
 
   useEffect(() => {
     if (typeof characterSelect !== "undefined") {
