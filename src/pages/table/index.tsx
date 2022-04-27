@@ -4,13 +4,20 @@ import Button from "@mui/material/Button";
 import {
   DataGrid,
   GridColDef,
-  GridToolbar,
+  GridToolbarContainer,
+  GridToolbarFilterButton,
   GridValueGetterParams,
 } from "@mui/x-data-grid";
 import {
   selectCharacters,
   fetchCharactersList,
 } from "redux/genshinCharacters/genshinCharactersSlice";
+
+const DataGridToolbar = () => (
+  <GridToolbarContainer>
+    <GridToolbarFilterButton />
+  </GridToolbarContainer>
+);
 
 const getId = (params: GridValueGetterParams) => params.row.id;
 
@@ -69,7 +76,8 @@ const TablePage = () => {
           onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
           rowsPerPageOptions={[5, 10, 20]}
           pagination
-          components={{ Toolbar: GridToolbar }}
+          components={{ Toolbar: DataGridToolbar }}
+          disableSelectionOnClick
         />
       </div>
     </div>
