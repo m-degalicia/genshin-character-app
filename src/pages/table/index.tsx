@@ -12,7 +12,7 @@ import {
 import { useAppSelector, useAppDispatch } from "app/hooks";
 import routes from "routes/routes";
 import {
-  selectCharacters,
+  selectCharacterList,
   fetchCharactersList,
 } from "redux/genshinCharacters/genshinCharactersSlice";
 
@@ -61,7 +61,7 @@ const columns: GridColDef[] = [
 
 const TablePage = () => {
   const [pageSize, setPageSize] = useState<number>(5);
-  const characterList = useAppSelector(selectCharacters);
+  const characterList = useAppSelector(selectCharacterList);
   const characterListStatus = useAppSelector(
     (state) => state.genshinCharacters.status
   );

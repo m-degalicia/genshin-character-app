@@ -1,5 +1,6 @@
 import React, { FormEvent, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import { nanoid } from "@reduxjs/toolkit";
 import Button from "@mui/material/Button";
 import Container from "@mui/material/Container";
 import FormControl from "@mui/material/FormControl";
@@ -16,6 +17,8 @@ import { useAppSelector, useAppDispatch } from "app/hooks";
 import {
   fetchCharactersList,
   selectCharacterById,
+  characterAdded,
+  characterUpdated,
 } from "redux/genshinCharacters/genshinCharactersSlice";
 import {
   ElementsList,
@@ -37,7 +40,7 @@ const TableForm = () => {
   const isInit =
     characterListStatus === "idle" || characterListStatus === "loading";
   const characterSelect = useAppSelector((state) =>
-    selectCharacterById(state, id ? parseInt(id) : 0)
+    selectCharacterById(state, id ?? "0")
   );
   const [name, setName] = useState("");
   const [affiliation, setaffiliation] = useState("");
@@ -76,6 +79,7 @@ const TableForm = () => {
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const data = {
+      id,
       name,
       vision,
       affiliation,
@@ -83,7 +87,14 @@ const TableForm = () => {
       weapon,
       rarity,
     };
-    console.log(data);
+
+    if (isEdit) {
+      dispatch(characterUpdated({ ...data }));
+      navigate(routes.table());
+    } else {
+      dispatch(characterAdded({ ...data, id: nanoid() }));
+      navigate(routes.table());
+    }
   };
 
   if (isEdit && isInit) {

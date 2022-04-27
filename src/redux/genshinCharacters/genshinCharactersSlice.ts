@@ -1,4 +1,4 @@
-import { createAsyncThunk, createSelector, createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { createAsyncThunk, createSelector, createSlice, PayloadAction, nanoid } from '@reduxjs/toolkit';
 import { RootState, AppThunk } from '../../app/store';
 import { client } from 'api/client';
 import { SERVER_URL } from 'constants/index';
@@ -20,8 +20,8 @@ export const fetchCharactersList = createAsyncThunk(
   'genshinCharacters/fetch',
   async () => {
     const response = await client.get(`${SERVER_URL}characters/all`);
-    const transformedResponse = response?.data?.map((char: any, index: number) => ({
-      id: index + 1,
+    const transformedResponse = response?.data?.map((char: any) => ({
+      id: nanoid(),
       name: char.name,
       vision: char.vision,
       weapon: char.weapon,
@@ -37,6 +37,19 @@ export const genshinCharactersSlice = createSlice({
   name: 'genshinCharacters',
   initialState,
   reducers: {
+    characterAdded: (state, action) => {
+      let characterList: Character[] = [];
+      characterList = [...state.list];
+      characterList.push(action.payload);
+      return { ...state, list: characterList }
+    },
+    characterUpdated: (state, action) => {
+      const { id } = action.payload;
+      const existingCharacterIndex = state.list.findIndex(character => character.id === id);
+      if (existingCharacterIndex > -1) {
+        state.list[existingCharacterIndex] = action.payload;
+      }
+    }
   },
   extraReducers: (builder) => {
     builder
@@ -54,12 +67,17 @@ export const genshinCharactersSlice = createSlice({
   },
 });
 
-export const {} = genshinCharactersSlice.actions;
+export const { characterAdded, characterUpdated } = genshinCharactersSlice.actions;
 
 export const selectCharacters = (state: RootState) => state.genshinCharacters.list;
+export const selectCharacterList = createSelector([selectCharacters], (list) => {
+  const tempList = [...list];
+  return tempList.sort((a: Character, b: Character) => a.name.localeCompare(b.name));
+});
+
 export const getCharactersListLength = (state: RootState) => state.genshinCharacters.list.length;
 
-const selectCharacterId = (state: RootState, id: number) => id
+const selectCharacterId = (state: RootState, id: string) => id
 export const selectCharacterById = createSelector([selectCharacters, selectCharacterId], (list, id) => list.find((character: Character) => character.id === id));
 
 export default genshinCharactersSlice.reducer;
