@@ -11,6 +11,9 @@ import {
 
 import { useAppSelector, useAppDispatch } from "app/hooks";
 import routes from "routes/routes";
+
+import ConfirmDialog from "components/ConfirmDialog";
+
 import {
   selectCharacterList,
   fetchCharactersList,
@@ -24,40 +27,9 @@ const DataGridToolbar = () => (
 
 const getId = (params: GridValueGetterParams) => params.row.id;
 
-const columns: GridColDef[] = [
-  { field: "name", headerName: "Name", flex: 1, minWidth: 150 },
-  { field: "vision", headerName: "Vision" },
-  { field: "weapon", headerName: "Weapon" },
-  { field: "nation", headerName: "Nation" },
-  { field: "affiliation", headerName: "Affiliation", width: 200 },
-  { field: "rarity", headerName: "Rarity" },
-  {
-    field: "action",
-    headerName: "Actions",
-    width: 200,
-    valueGetter: getId,
-    renderCell: (params: GridValueGetterParams<any>) => (
-      <>
-        <Link
-          to={`${routes.tableEdit()}${params.value}`}
-          style={{ textDecoration: "none" }}
-        >
-          <Button variant="contained" color="primary" size="small">
-            Edit
-          </Button>
-        </Link>
-        <Button
-          variant="contained"
-          color="error"
-          size="small"
-          style={{ marginLeft: 16 }}
-        >
-          Delete
-        </Button>
-      </>
-    ),
-  },
-];
+const getActionInfo = (params: GridValueGetterParams) => {
+  return { id: params.row.id, name: params.row.name };
+};
 
 const TablePage = () => {
   const [pageSize, setPageSize] = useState<number>(5);
@@ -66,6 +38,58 @@ const TablePage = () => {
     (state) => state.genshinCharacters.status
   );
   const dispatch = useAppDispatch();
+
+  const [open, setOpen] = useState(false);
+  const [dialogName, setDialogName] = useState("");
+  const [dialogId, setDialogId] = useState("");
+
+  const handleDialogOpen = (name: string, id: string) => {
+    setDialogName(name);
+    setDialogId(id);
+    setOpen(true);
+  };
+
+  const handleDelete = () => {
+    console.log(dialogId);
+    setDialogName("");
+    setDialogId("");
+  };
+
+  const columns: GridColDef[] = [
+    { field: "name", headerName: "Name", flex: 1, minWidth: 150 },
+    { field: "vision", headerName: "Vision" },
+    { field: "weapon", headerName: "Weapon" },
+    { field: "nation", headerName: "Nation" },
+    { field: "affiliation", headerName: "Affiliation", width: 200 },
+    { field: "rarity", headerName: "Rarity" },
+    {
+      field: "action",
+      headerName: "Actions",
+      width: 200,
+      valueGetter: getActionInfo,
+      renderCell: (params: GridValueGetterParams<any>) => (
+        <>
+          <Link
+            to={`${routes.tableEdit()}${params.value.id}`}
+            style={{ textDecoration: "none" }}
+          >
+            <Button variant="contained" color="primary" size="small">
+              Edit
+            </Button>
+          </Link>
+          <Button
+            variant="contained"
+            color="error"
+            size="small"
+            style={{ marginLeft: 16 }}
+            onClick={() => handleDialogOpen(params.value.name, params.value.id)}
+          >
+            Delete
+          </Button>
+        </>
+      ),
+    },
+  ];
 
   useEffect(() => {
     if (characterListStatus === "idle") {
@@ -108,6 +132,12 @@ const TablePage = () => {
           disableSelectionOnClick
         />
       </div>
+      <ConfirmDialog
+        open={open}
+        setOpen={setOpen}
+        name={dialogName}
+        onConfirm={handleDelete}
+      />
     </div>
   );
 };
