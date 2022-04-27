@@ -1,7 +1,8 @@
-import { createAsyncThunk, createSelector, createSlice, PayloadAction, nanoid } from '@reduxjs/toolkit';
-import { RootState, AppThunk } from '../../app/store';
+import { createAsyncThunk, createSelector, createSlice } from '@reduxjs/toolkit';
+import { RootState } from '../../app/store';
 import { client } from 'api/client';
-import { SERVER_URL } from 'constants/index';
+import { SERVER_URL, ElementsList } from 'constants/index';
+
 import type Character from 'types/Character';
 
 export interface GenshinState {
@@ -80,6 +81,16 @@ export const selectCharacters = (state: RootState) => state.genshinCharacters.li
 export const selectCharacterList = createSelector([selectCharacters], (list) => {
   const tempList = [...list];
   return tempList.sort((a: Character, b: Character) => a.name.localeCompare(b.name));
+});
+
+export const selectCharacterElementCount = createSelector([selectCharacters], (list) => {
+  const tempList = [...list];
+  const elementListCount = ElementsList.reduce((arr: any, currElement: any) => {
+    const count = tempList.filter((character: Character) => character.vision === currElement).length;
+    arr.push(count)
+    return arr;
+  }, []);
+  return elementListCount;
 });
 
 export const getCharactersListLength = (state: RootState) => state.genshinCharacters.list.length;
