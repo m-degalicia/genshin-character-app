@@ -20,8 +20,8 @@ export const fetchCharactersList = createAsyncThunk(
   'genshinCharacters/fetch',
   async () => {
     const response = await client.get(`${SERVER_URL}characters/all`);
-    const transformedResponse = response?.data?.map((char: any) => ({
-      id: nanoid(),
+    const transformedResponse = response?.data?.map((char: any, index: number) => ({
+      id: `${index + 1}`,
       name: char.name,
       vision: char.vision,
       weapon: char.weapon,
