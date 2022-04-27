@@ -1,4 +1,4 @@
-import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { createAsyncThunk, createSelector, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { RootState, AppThunk } from '../../app/store';
 import { client } from 'api/client';
 import { SERVER_URL } from 'constants/index';
@@ -57,5 +57,9 @@ export const genshinCharactersSlice = createSlice({
 export const {} = genshinCharactersSlice.actions;
 
 export const selectCharacters = (state: RootState) => state.genshinCharacters.list;
+export const getCharactersListLength = (state: RootState) => state.genshinCharacters.list.length;
+
+const selectCharacterId = (state: RootState, id: number) => id
+export const selectCharacterById = createSelector([selectCharacters, selectCharacterId], (list, id) => list.find((character: Character) => character.id === id));
 
 export default genshinCharactersSlice.reducer;

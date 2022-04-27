@@ -12,18 +12,33 @@ import Stack from "@mui/material/Stack";
 import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
 
+import { useAppSelector, useAppDispatch } from "app/hooks";
+import {
+  fetchCharactersList,
+  selectCharacterById,
+} from "redux/genshinCharacters/genshinCharactersSlice";
 import {
   ElementsList,
   NationsList,
   RarityList,
   WeaponsList,
 } from "constants/index";
+import routes from "routes/routes";
 import { Element, Nation, Rarity, Weapon } from "types/Attributes";
 
 const TableForm = () => {
   const navigate = useNavigate();
+  const dispatch = useAppDispatch();
   const { id } = useParams();
-
+  const isEdit = typeof id !== "undefined";
+  const characterListStatus = useAppSelector(
+    (state) => state.genshinCharacters.status
+  );
+  const isInit =
+    characterListStatus === "idle" || characterListStatus === "loading";
+  const characterSelect = useAppSelector((state) =>
+    selectCharacterById(state, id ? parseInt(id) : 0)
+  );
   const [name, setName] = useState("");
   const [affiliation, setaffiliation] = useState("");
   const [vision, setVision] = useState("");
@@ -31,15 +46,54 @@ const TableForm = () => {
   const [nation, setNation] = useState("");
   const [rarity, setRarity] = useState(4);
 
+  useEffect(() => {
+    if (characterListStatus === "idle") {
+      dispatch(fetchCharactersList());
+    }
+  }, [characterListStatus, dispatch]);
+
+  useEffect(() => {
+    if (typeof characterSelect !== "undefined") {
+      setName(characterSelect.name);
+      setNation(characterSelect.nation);
+      setRarity(characterSelect.rarity);
+      setVision(characterSelect.vision);
+      setWeapon(characterSelect.weapon);
+      setaffiliation(characterSelect.affiliation);
+    }
+  }, [characterSelect]);
+
+  useEffect(() => {
+    if (
+      !(characterListStatus === "idle" || characterListStatus === "loading") &&
+      typeof id !== "undefined" &&
+      typeof characterSelect === "undefined"
+    ) {
+      navigate(routes.error404());
+    }
+  }, [characterListStatus, id, characterSelect, navigate]);
+
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const data = {
       name,
       vision,
       affiliation,
+      nation,
+      weapon,
+      rarity,
     };
     console.log(data);
   };
+
+  if (isEdit && isInit) {
+    return <div />;
+  }
+
+  if (isEdit && characterListStatus === "failed") {
+    return <div>Error fetching data</div>;
+  }
+
   return (
     <Container maxWidth="xs">
       <div
@@ -50,22 +104,25 @@ const TableForm = () => {
         }}
       >
         <Typography component="h1" variant="h5" sx={{ mb: 1 }}>
-          {`${id ? "Edit" : "Create"} Character`}
+          {`${isEdit ? "Edit" : "Create"} Character`}
         </Typography>
         <form style={{ width: "100%" }} onSubmit={handleSubmit}>
           <Grid container spacing={2}>
             <Grid item xs={12} sm={6}>
-              <TextField
-                autoComplete="name"
-                name="name"
-                variant="outlined"
-                required
-                fullWidth
-                id="name"
-                label="Name"
-                onChange={(e) => setName(e.target.value)}
-                autoFocus
-              />
+              <FormControl fullWidth required>
+                <TextField
+                  autoComplete="name"
+                  name="name"
+                  variant="outlined"
+                  required
+                  fullWidth
+                  id="name"
+                  label="Name"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  autoFocus
+                />
+              </FormControl>
             </Grid>
             <Grid item xs={12} sm={6}>
               <TextField
@@ -74,6 +131,7 @@ const TableForm = () => {
                 fullWidth
                 id="affiliation"
                 label="Affiliation"
+                value={affiliation}
                 onChange={(e) => setaffiliation(e.target.value)}
               />
             </Grid>
@@ -85,6 +143,7 @@ const TableForm = () => {
                   value={vision}
                   label="Vision"
                   onChange={(e) => setVision(e.target.value)}
+                  sx={{ textAlign: "start" }}
                 >
                   {ElementsList.map((element: Element) => (
                     <MenuItem value={element} key={element}>
@@ -103,6 +162,7 @@ const TableForm = () => {
                   value={weapon}
                   label="Weapon"
                   onChange={(e) => setWeapon(e.target.value)}
+                  sx={{ textAlign: "start" }}
                 >
                   {WeaponsList.map((weapon: Weapon) => (
                     <MenuItem value={weapon} key={weapon}>
@@ -121,6 +181,7 @@ const TableForm = () => {
                   value={nation}
                   label="Nation"
                   onChange={(e) => setNation(e.target.value)}
+                  sx={{ textAlign: "start" }}
                 >
                   {NationsList.map((nation: Nation) => (
                     <MenuItem value={nation} key={nation}>
@@ -139,6 +200,7 @@ const TableForm = () => {
                   value={rarity}
                   label="Rarity"
                   onChange={(e) => setRarity(e.target.value as number)}
+                  sx={{ textAlign: "start" }}
                 >
                   {RarityList.map((rating: Rarity) => (
                     <MenuItem value={rating} key={rating}>
@@ -157,7 +219,7 @@ const TableForm = () => {
               color="primary"
               sx={{ flex: 1 }}
             >
-              {id ? "Edit" : "Create"}
+              {isEdit ? "Edit" : "Create"}
             </Button>
             <Button
               variant="outlined"

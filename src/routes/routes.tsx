@@ -4,6 +4,7 @@ export const routes = {
   tableEdit: () => "/table/edit/",
   tableCreate: () => "/table/create",
   chart: () => "/chart",
+  error404: () => "/404",
 };
 
 export default routes;
