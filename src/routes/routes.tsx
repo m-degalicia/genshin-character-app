@@ -1,5 +1,5 @@
 export const routes = {
-  root: () => "/",
+  root: () => "",
   table: () => "/table",
   tableEdit: () => "/table/edit/",
   tableCreate: () => "/table/create",
