@@ -15,7 +15,6 @@ import Typography from "@mui/material/Typography";
 
 import { useAppSelector, useAppDispatch } from "app/hooks";
 import {
-  fetchCharactersList,
   selectCharacterById,
   characterAdded,
   characterUpdated,
