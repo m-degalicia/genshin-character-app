@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useAppSelector, useAppDispatch } from "app/hooks";
+import { Link } from "react-router-dom";
 import Button from "@mui/material/Button";
 import {
   DataGrid,
@@ -8,6 +8,9 @@ import {
   GridToolbarFilterButton,
   GridValueGetterParams,
 } from "@mui/x-data-grid";
+
+import { useAppSelector, useAppDispatch } from "app/hooks";
+import routes from "routes/routes";
 import {
   selectCharacters,
   fetchCharactersList,
@@ -35,9 +38,14 @@ const columns: GridColDef[] = [
     valueGetter: getId,
     renderCell: (params: GridValueGetterParams<any>) => (
       <>
-        <Button variant="contained" color="primary" size="small">
-          {`Edit ${params.value}`}
-        </Button>
+        <Link
+          to={`${routes.tableEdit()}${params.value}`}
+          style={{ textDecoration: "none" }}
+        >
+          <Button variant="contained" color="primary" size="small">
+            Edit
+          </Button>
+        </Link>
         <Button
           variant="contained"
           color="error"
@@ -66,7 +74,27 @@ const TablePage = () => {
   }, [characterListStatus, dispatch]);
 
   return (
-    <div style={{ display: "flex", height: "100%", width: "100%" }}>
+    <div
+      style={{
+        display: "flex",
+        height: "100%",
+        width: "100%",
+        flexDirection: "column",
+      }}
+    >
+      <Link
+        to={routes.tableCreate()}
+        style={{ textDecoration: "none", width: "100%", display: "flex" }}
+      >
+        <Button
+          variant="contained"
+          color="primary"
+          size="medium"
+          sx={{ mb: 2 }}
+        >
+          Create Character
+        </Button>
+      </Link>
       <div style={{ flexGrow: 1 }}>
         <DataGrid
           autoHeight
