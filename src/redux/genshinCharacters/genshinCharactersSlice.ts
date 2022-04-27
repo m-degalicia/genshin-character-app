@@ -49,6 +49,13 @@ export const genshinCharactersSlice = createSlice({
       if (existingCharacterIndex > -1) {
         state.list[existingCharacterIndex] = action.payload;
       }
+    },
+    characterRemoved: (state, action) => {
+      const { id } = action.payload;
+      const existingCharacterIndex = state.list.findIndex(character => character.id === id);
+      if (existingCharacterIndex > -1) {
+        state.list.splice(existingCharacterIndex, 1);
+      }
     }
   },
   extraReducers: (builder) => {
@@ -67,7 +74,7 @@ export const genshinCharactersSlice = createSlice({
   },
 });
 
-export const { characterAdded, characterUpdated } = genshinCharactersSlice.actions;
+export const { characterAdded, characterUpdated, characterRemoved } = genshinCharactersSlice.actions;
 
 export const selectCharacters = (state: RootState) => state.genshinCharacters.list;
 export const selectCharacterList = createSelector([selectCharacters], (list) => {

@@ -17,6 +17,7 @@ import ConfirmDialog from "components/ConfirmDialog";
 import {
   selectCharacterList,
   fetchCharactersList,
+  characterRemoved,
 } from "redux/genshinCharacters/genshinCharactersSlice";
 
 const DataGridToolbar = () => (
@@ -50,7 +51,7 @@ const TablePage = () => {
   };
 
   const handleDelete = () => {
-    console.log(dialogId);
+    dispatch(characterRemoved({ id: dialogId }));
     setDialogName("");
     setDialogId("");
   };
