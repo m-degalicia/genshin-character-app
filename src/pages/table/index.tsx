@@ -1,18 +1,47 @@
 import React, { useEffect, useState } from "react";
 import { useAppSelector, useAppDispatch } from "app/hooks";
+import Button from "@mui/material/Button";
+import {
+  DataGrid,
+  GridColDef,
+  GridToolbar,
+  GridValueGetterParams,
+} from "@mui/x-data-grid";
 import {
   selectCharacters,
   fetchCharactersList,
 } from "redux/genshinCharacters/genshinCharactersSlice";
-import { DataGrid, GridColDef, GridToolbar } from "@mui/x-data-grid";
+
+const getId = (params: GridValueGetterParams) => params.row.id;
 
 const columns: GridColDef[] = [
-  { field: "name", headerName: "Name", width: 150 },
+  { field: "name", headerName: "Name", flex: 1, minWidth: 150 },
   { field: "vision", headerName: "Vision" },
   { field: "weapon", headerName: "Weapon" },
   { field: "nation", headerName: "Nation" },
   { field: "affiliation", headerName: "Affiliation", width: 200 },
   { field: "rarity", headerName: "Rarity" },
+  {
+    field: "action",
+    headerName: "Actions",
+    width: 200,
+    valueGetter: getId,
+    renderCell: (params: GridValueGetterParams<any>) => (
+      <>
+        <Button variant="contained" color="primary" size="small">
+          {`Edit ${params.value}`}
+        </Button>
+        <Button
+          variant="contained"
+          color="error"
+          size="small"
+          style={{ marginLeft: 16 }}
+        >
+          Delete
+        </Button>
+      </>
+    ),
+  },
 ];
 
 const TablePage = () => {

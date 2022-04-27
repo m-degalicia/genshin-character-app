@@ -11,7 +11,18 @@ const Layout: FunctionComponent<LayoutProps> = ({ children }) => {
   return (
     <>
       <NavBar />
-      <Box sx={{ p: 1, width: "100%", height: "100%", overflow: "hidden" }}>
+      <Box
+        sx={{
+          pt: 4,
+          px: 2,
+          pb: 2,
+          width: "100%",
+          height: "100%",
+          overflow: "hidden",
+          margin: "auto",
+        }}
+        maxWidth="xl"
+      >
         {children}
       </Box>
     </>
