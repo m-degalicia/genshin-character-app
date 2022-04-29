@@ -1,27 +1,31 @@
 {
   "files": {
-    "main.css": "/genshin-character-app/static/css/main.c40df2da.css",
-    "main.js": "/genshin-character-app/static/js/main.ea022106.js",
-    "static/js/860.ce9a2106.chunk.js": "/genshin-character-app/static/js/860.ce9a2106.chunk.js",
-    "static/js/64.c7ef7d53.chunk.js": "/genshin-character-app/static/js/64.c7ef7d53.chunk.js",
-    "static/js/701.2edc70ff.chunk.js": "/genshin-character-app/static/js/701.2edc70ff.chunk.js",
+    "main.css": "/genshin-character-app/static/css/main.3d78819d.css",
+    "main.js": "/genshin-character-app/static/js/main.f0e1ea1f.js",
+    "welcome.js": "/genshin-character-app/static/js/welcome.cd1584a7.chunk.js",
+    "chart.js": "/genshin-character-app/static/js/chart.5356ab23.chunk.js",
+    "table.js": "/genshin-character-app/static/js/table.1d38deb2.chunk.js",
+    "form.js": "/genshin-character-app/static/js/form.2ad72ace.chunk.js",
     "static/js/787.05eb42b9.chunk.js": "/genshin-character-app/static/js/787.05eb42b9.chunk.js",
     "static/js/839.00bf51d5.chunk.js": "/genshin-character-app/static/js/839.00bf51d5.chunk.js",
     "static/js/524.400eec49.chunk.js": "/genshin-character-app/static/js/524.400eec49.chunk.js",
-    "static/js/683.2091e233.chunk.js": "/genshin-character-app/static/js/683.2091e233.chunk.js",
+    "static/js/683.2aa18677.chunk.js": "/genshin-character-app/static/js/683.2aa18677.chunk.js",
+    "static/js/983.51e56f23.chunk.js": "/genshin-character-app/static/js/983.51e56f23.chunk.js",
     "index.html": "/genshin-character-app/index.html",
-    "main.c40df2da.css.map": "/genshin-character-app/static/css/main.c40df2da.css.map",
-    "main.ea022106.js.map": "/genshin-character-app/static/js/main.ea022106.js.map",
-    "860.ce9a2106.chunk.js.map": "/genshin-character-app/static/js/860.ce9a2106.chunk.js.map",
-    "64.c7ef7d53.chunk.js.map": "/genshin-character-app/static/js/64.c7ef7d53.chunk.js.map",
-    "701.2edc70ff.chunk.js.map": "/genshin-character-app/static/js/701.2edc70ff.chunk.js.map",
+    "main.3d78819d.css.map": "/genshin-character-app/static/css/main.3d78819d.css.map",
+    "main.f0e1ea1f.js.map": "/genshin-character-app/static/js/main.f0e1ea1f.js.map",
+    "welcome.cd1584a7.chunk.js.map": "/genshin-character-app/static/js/welcome.cd1584a7.chunk.js.map",
+    "chart.5356ab23.chunk.js.map": "/genshin-character-app/static/js/chart.5356ab23.chunk.js.map",
+    "table.1d38deb2.chunk.js.map": "/genshin-character-app/static/js/table.1d38deb2.chunk.js.map",
+    "form.2ad72ace.chunk.js.map": "/genshin-character-app/static/js/form.2ad72ace.chunk.js.map",
     "787.05eb42b9.chunk.js.map": "/genshin-character-app/static/js/787.05eb42b9.chunk.js.map",
     "839.00bf51d5.chunk.js.map": "/genshin-character-app/static/js/839.00bf51d5.chunk.js.map",
     "524.400eec49.chunk.js.map": "/genshin-character-app/static/js/524.400eec49.chunk.js.map",
-    "683.2091e233.chunk.js.map": "/genshin-character-app/static/js/683.2091e233.chunk.js.map"
+    "683.2aa18677.chunk.js.map": "/genshin-character-app/static/js/683.2aa18677.chunk.js.map",
+    "983.51e56f23.chunk.js.map": "/genshin-character-app/static/js/983.51e56f23.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.c40df2da.css",
-    "static/js/main.ea022106.js"
+    "static/css/main.3d78819d.css",
+    "static/js/main.f0e1ea1f.js"
   ]
 }

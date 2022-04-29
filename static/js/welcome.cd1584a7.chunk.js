@@ -1,0 +1,2 @@
+"use strict";(self.webpackChunkgenshin_character_app=self.webpackChunkgenshin_character_app||[]).push([[773],{1931:function(a,e,t){t.r(e);t(2791);var s=t(184);e.default=function(){return(0,s.jsxs)("div",{style:{textAlign:"start"},children:["Welcome!",(0,s.jsx)("br",{}),(0,s.jsx)("br",{})," This App lists current characters in Genshin Impact and displays the data in a table or a chart.",(0,s.jsx)("br",{}),(0,s.jsx)("br",{}),"To start, please select Table or Chart in the navigation menu."]})}}}]);
+//# sourceMappingURL=welcome.cd1584a7.chunk.js.map
