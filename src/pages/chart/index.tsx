@@ -1,6 +1,7 @@
 import React from "react";
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
 import { Pie } from "react-chartjs-2";
+import Container from "@mui/material/Container";
 
 import { useAppSelector } from "app/hooks";
 import { ElementsList } from "constants/index";
@@ -46,17 +47,22 @@ const ChartPage = () => {
   };
 
   return (
-    <div
-      style={{
+    <Container
+      sx={{
         display: "flex",
-        height: "100%",
-        width: "100%",
+        width: { xs: "300px", sm: "500px", md: "600px", lg: "800px" },
         flexDirection: "column",
       }}
     >
       <div>Number of Characters per element</div>
-      <Pie data={data} />
-    </div>
+      <br />
+      <Pie
+        data={data}
+        options={{
+          aspectRatio: 1,
+        }}
+      />
+    </Container>
   );
 };
 
