@@ -1,5 +1,6 @@
-import React, { FormEvent, useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import { useForm, Controller, SubmitHandler } from "react-hook-form";
 import { nanoid } from "@reduxjs/toolkit";
 import Button from "@mui/material/Button";
 import Container from "@mui/material/Container";
@@ -30,6 +31,15 @@ import { Element, Nation, Rarity, Weapon } from "types/Attributes";
 
 import useFetchCharactersList from "utils/useFetchCharactersList";
 
+type FormInputs = {
+  name: string;
+  affiliation: string;
+  vision: string;
+  nation: string;
+  weapon: string;
+  rarity: number;
+};
+
 const TableForm = () => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
@@ -44,23 +54,20 @@ const TableForm = () => {
   const characterSelect = useAppSelector((state) =>
     selectCharacterById(state, id ?? "0")
   );
-  const [name, setName] = useState("");
-  const [affiliation, setaffiliation] = useState("");
-  const [vision, setVision] = useState("");
-  const [weapon, setWeapon] = useState("");
-  const [nation, setNation] = useState("");
-  const [rarity, setRarity] = useState(4);
+  const { handleSubmit, control, reset } = useForm<FormInputs>();
 
   useEffect(() => {
     if (typeof characterSelect !== "undefined") {
-      setName(characterSelect.name);
-      setNation(characterSelect.nation);
-      setRarity(characterSelect.rarity);
-      setVision(characterSelect.vision);
-      setWeapon(characterSelect.weapon);
-      setaffiliation(characterSelect.affiliation);
+      reset({
+        name: characterSelect.name,
+        nation: characterSelect.nation,
+        rarity: characterSelect.rarity,
+        vision: characterSelect.vision,
+        weapon: characterSelect.weapon,
+        affiliation: characterSelect.affiliation,
+      });
     }
-  }, [characterSelect]);
+  }, [characterSelect, reset]);
 
   useEffect(() => {
     if (
@@ -72,20 +79,9 @@ const TableForm = () => {
     }
   }, [characterListStatus, id, characterSelect, navigate]);
 
-  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    const data = {
-      id,
-      name,
-      vision,
-      affiliation,
-      nation,
-      weapon,
-      rarity,
-    };
-
+  const _handleSubmit: SubmitHandler<FormInputs> = (data) => {
     if (isEdit) {
-      dispatch(characterUpdated({ ...data }));
+      dispatch(characterUpdated({ ...data, id }));
       navigate(routes.table());
     } else {
       dispatch(characterAdded({ ...data, id: nanoid() }));
@@ -113,110 +109,186 @@ const TableForm = () => {
         <Typography component="h1" variant="h5" sx={{ mb: 1 }}>
           {`${isEdit ? "Edit" : "Create"} Character`}
         </Typography>
-        <form style={{ width: "100%" }} onSubmit={handleSubmit}>
+        <form
+          style={{ width: "100%" }}
+          onSubmit={handleSubmit(_handleSubmit)}
+          noValidate
+        >
           <Grid container spacing={2}>
-            <Grid item xs={12} sm={6}>
+            <Grid item xs={12}>
               <FormControl fullWidth required>
-                <TextField
-                  autoComplete="name"
+                <Controller
                   name="name"
-                  variant="outlined"
-                  required
-                  fullWidth
-                  id="name"
-                  label="Name"
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                  autoFocus
+                  control={control}
+                  defaultValue=""
+                  rules={{ required: "Name required" }}
+                  render={({
+                    field: { onChange, value },
+                    fieldState: { error },
+                  }) => (
+                    <TextField
+                      autoComplete="name"
+                      variant="outlined"
+                      fullWidth
+                      required
+                      label="Name"
+                      value={value}
+                      onChange={onChange}
+                      autoFocus
+                      error={!!error}
+                      helperText={error ? error.message : null}
+                    />
+                  )}
                 />
               </FormControl>
             </Grid>
-            <Grid item xs={12} sm={6}>
-              <TextField
-                variant="outlined"
-                required
-                fullWidth
-                id="affiliation"
-                label="Affiliation"
-                value={affiliation}
-                onChange={(e) => setaffiliation(e.target.value)}
+            <Grid item xs={12}>
+              <Controller
+                name="affiliation"
+                control={control}
+                defaultValue=""
+                rules={{ required: "Affiliation required" }}
+                render={({
+                  field: { onChange, value },
+                  fieldState: { error },
+                }) => (
+                  <TextField
+                    autoComplete="affiliation"
+                    variant="outlined"
+                    fullWidth
+                    required
+                    label="Affiliation"
+                    value={value}
+                    onChange={onChange}
+                    error={!!error}
+                    helperText={error ? error.message : null}
+                  />
+                )}
               />
             </Grid>
             <Grid item xs={12}>
-              <FormControl fullWidth required>
-                <InputLabel>Vision</InputLabel>
-                <Select
-                  id="vision"
-                  value={vision}
-                  label="Vision"
-                  onChange={(e) => setVision(e.target.value)}
-                  sx={{ textAlign: "start" }}
-                >
-                  {ElementsList.map((element: Element) => (
-                    <MenuItem value={element} key={element}>
-                      {element}
-                    </MenuItem>
-                  ))}
-                </Select>
-                <FormHelperText>Required</FormHelperText>
-              </FormControl>
+              <Controller
+                control={control}
+                name="vision"
+                defaultValue=""
+                rules={{ required: "Element Vision required" }}
+                render={({
+                  field: { onChange, value },
+                  fieldState: { error },
+                }) => (
+                  <FormControl fullWidth required error={!!error}>
+                    <InputLabel>Vision</InputLabel>
+                    <Select
+                      value={value}
+                      label="Vision"
+                      onChange={onChange}
+                      sx={{ textAlign: "start" }}
+                    >
+                      {ElementsList.map((element: Element) => (
+                        <MenuItem value={element} key={element}>
+                          {element}
+                        </MenuItem>
+                      ))}
+                    </Select>
+                    <FormHelperText>
+                      {error ? error.message : "Required"}
+                    </FormHelperText>
+                  </FormControl>
+                )}
+              />
             </Grid>
             <Grid item xs={12}>
-              <FormControl fullWidth required>
-                <InputLabel>Weapon</InputLabel>
-                <Select
-                  id="weapon"
-                  value={weapon}
-                  label="Weapon"
-                  onChange={(e) => setWeapon(e.target.value)}
-                  sx={{ textAlign: "start" }}
-                >
-                  {WeaponsList.map((weapon: Weapon) => (
-                    <MenuItem value={weapon} key={weapon}>
-                      {weapon}
-                    </MenuItem>
-                  ))}
-                </Select>
-                <FormHelperText>Required</FormHelperText>
-              </FormControl>
+              <Controller
+                control={control}
+                name="weapon"
+                defaultValue=""
+                rules={{ required: "Weapon type required" }}
+                render={({
+                  field: { onChange, value },
+                  fieldState: { error },
+                }) => (
+                  <FormControl fullWidth required error={!!error}>
+                    <InputLabel>Weapon</InputLabel>
+                    <Select
+                      value={value}
+                      label="Weapon"
+                      onChange={onChange}
+                      sx={{ textAlign: "start" }}
+                    >
+                      {WeaponsList.map((weapon: Weapon) => (
+                        <MenuItem value={weapon} key={weapon}>
+                          {weapon}
+                        </MenuItem>
+                      ))}
+                    </Select>
+                    <FormHelperText>
+                      {error ? error.message : "Required"}
+                    </FormHelperText>
+                  </FormControl>
+                )}
+              />
             </Grid>
             <Grid item xs={12}>
-              <FormControl fullWidth required>
-                <InputLabel>Nation</InputLabel>
-                <Select
-                  id="nation"
-                  value={nation}
-                  label="Nation"
-                  onChange={(e) => setNation(e.target.value)}
-                  sx={{ textAlign: "start" }}
-                >
-                  {NationsList.map((nation: Nation) => (
-                    <MenuItem value={nation} key={nation}>
-                      {nation}
-                    </MenuItem>
-                  ))}
-                </Select>
-                <FormHelperText>Required</FormHelperText>
-              </FormControl>
+              <Controller
+                control={control}
+                name="nation"
+                defaultValue=""
+                rules={{ required: "Nation required" }}
+                render={({
+                  field: { onChange, value },
+                  fieldState: { error },
+                }) => (
+                  <FormControl fullWidth required error={!!error}>
+                    <InputLabel>Nation</InputLabel>
+                    <Select
+                      value={value}
+                      label="Nation"
+                      onChange={onChange}
+                      sx={{ textAlign: "start" }}
+                    >
+                      {NationsList.map((nation: Nation) => (
+                        <MenuItem value={nation} key={nation}>
+                          {nation}
+                        </MenuItem>
+                      ))}
+                    </Select>
+                    <FormHelperText>
+                      {error ? error.message : "Required"}
+                    </FormHelperText>
+                  </FormControl>
+                )}
+              />
             </Grid>
             <Grid item xs={12}>
-              <FormControl fullWidth required>
-                <InputLabel>Rarity</InputLabel>
-                <Select
-                  id="rarity"
-                  value={rarity}
-                  label="Rarity"
-                  onChange={(e) => setRarity(e.target.value as number)}
-                  sx={{ textAlign: "start" }}
-                >
-                  {RarityList.map((rating: Rarity) => (
-                    <MenuItem value={rating} key={rating}>
-                      {rating}
-                    </MenuItem>
-                  ))}
-                </Select>
-                <FormHelperText>Required</FormHelperText>
-              </FormControl>
+              <Controller
+                control={control}
+                name="rarity"
+                defaultValue={4}
+                rules={{ required: "Rarity required" }}
+                render={({
+                  field: { onChange, value },
+                  fieldState: { error },
+                }) => (
+                  <FormControl fullWidth required error={!!error}>
+                    <InputLabel>Rarity</InputLabel>
+                    <Select
+                      value={value}
+                      label="Rarity"
+                      onChange={onChange}
+                      sx={{ textAlign: "start" }}
+                    >
+                      {RarityList.map((rating: Rarity) => (
+                        <MenuItem value={rating} key={rating}>
+                          {rating}
+                        </MenuItem>
+                      ))}
+                    </Select>
+                    <FormHelperText>
+                      {error ? error.message : "Required"}
+                    </FormHelperText>
+                  </FormControl>
+                )}
+              />
             </Grid>
           </Grid>
           <Stack direction="row" spacing={2} sx={{ mt: 2 }}>
