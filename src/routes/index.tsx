@@ -4,28 +4,24 @@ import { Routes, Route } from "react-router-dom";
 import Layout from "layouts/AppLayout";
 import routes from "./routes";
 
-const ChartPage = lazy(() => import("pages/chart"));
-const TablePage = lazy(() => import("pages/table"));
-const TableForm = lazy(() => import("pages/table/TableForm"));
+const WelcomePage = lazy(
+  () => import(/* webpackChunkName: "welcome" */ "pages/welcome")
+);
+const ChartPage = lazy(
+  () => import(/* webpackChunkName: "chart" */ "pages/chart")
+);
+const TablePage = lazy(
+  () => import(/* webpackChunkName: "table" */ "pages/table")
+);
+const TableForm = lazy(
+  () => import(/* webpackChunkName: "form" */ "pages/table/TableForm")
+);
 
 const AppRoutes = () => (
   <Layout>
     <Suspense fallback={<div>Loading...</div>}>
       <Routes>
-        <Route
-          path={routes.root()}
-          element={
-            <div style={{ textAlign: "start" }}>
-              Welcome!
-              <br />
-              <br /> This App lists current characters in Genshin Impact and
-              displays the data in a table or a chart.
-              <br />
-              <br />
-              To start, please select Table or Chart in the navigation menu.
-            </div>
-          }
-        />
+        <Route path={routes.root()} element={<WelcomePage />} />
         <Route path={routes.chart()} element={<ChartPage />} />
         <Route path={routes.table()} element={<TablePage />} />
         <Route path={routes.tableCreate()} element={<TableForm />} />
