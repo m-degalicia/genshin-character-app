@@ -1,4 +1,4 @@
-export const SERVER_URL = 'https://api.genshin.dev/';
+export const SERVER_URL = 'https://genshin.jmp.blue/';
 
 export const ElementsList = ['Anemo', 'Cryo' ,'Dendro' ,'Electro' ,'Geo' ,'Hydro' , 'Pyro'] as const;
 export const WeaponsList = ['Sword', 'Claymore', 'Catalyst', 'Bow', 'Polearm'] as const;
